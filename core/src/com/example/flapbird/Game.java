@@ -15,6 +15,12 @@ public class Game extends ApplicationAdapter {
 	private Texture fundo;
 
 	private float variacao = 0;
+	private float gravidade = 0;
+	private float larguraDispositivo;
+	private float alturaDispositivo;
+	private float posicaoInicialVerticalPassaro = 0;
+
+
 	
 	@Override
 	public void create () {
@@ -25,6 +31,10 @@ public class Game extends ApplicationAdapter {
 		passaros[1] = new Texture("passaro2.png");
 		passaros[2] = new Texture("passaro3.png");
 		fundo = new Texture("fundo.png");
+
+		alturaDispositivo= Gdx.graphics.getHeight();
+		larguraDispositivo = Gdx.graphics.getWidth();
+		posicaoInicialVerticalPassaro = alturaDispositivo/2;
 	}
 
 	@Override
@@ -32,13 +42,17 @@ public class Game extends ApplicationAdapter {
 
 
 		spriteBatch.begin();
-		if(variacao > 3){
+		if(variacao > 3)
 			variacao=0;
-		}
-		spriteBatch.draw(fundo,0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
-		spriteBatch.draw(passaros[(int)variacao],movimentoX,500);
+
+		if(posicaoInicialVerticalPassaro > 0 )
+		posicaoInicialVerticalPassaro = posicaoInicialVerticalPassaro - gravidade;
+
+		spriteBatch.draw(fundo,0,0,larguraDispositivo,alturaDispositivo);
+		spriteBatch.draw(passaros[(int)variacao],30,posicaoInicialVerticalPassaro);
 		//Calcula a diferença entre um render e outro
 		variacao+= Gdx.graphics.getDeltaTime() * 10;
+		gravidade++;
 		movimentoX++;
 		spriteBatch.end();
 
