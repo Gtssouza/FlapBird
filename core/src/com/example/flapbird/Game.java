@@ -29,6 +29,7 @@ public class Game extends ApplicationAdapter {
 	private float espacoEntreCanos;
 	private Random random;
 	private int pontos = 0;
+	private boolean passouDoCano;
 
 	//Exibição de textos
 	BitmapFont textoPontuacao;
@@ -44,6 +45,7 @@ public class Game extends ApplicationAdapter {
 	public void render () {
 
 		verificaEstadoJogo();
+		validarPontos();
 		desenharTexturas();
 
 
@@ -79,6 +81,7 @@ public class Game extends ApplicationAdapter {
 		if(posicaoCanoHorizontal < - canoAlto.getWidth()){
 			posicaoCanoHorizontal = larguraDispositivo;
 			posicaoCanoVertical = random.nextInt(800) - 400;
+			passouDoCano = false;
 		}
 		//aplica evento de toque na tela
 		boolean toqueNaTela = Gdx.input.justTouched();
@@ -109,6 +112,15 @@ public class Game extends ApplicationAdapter {
 		textoPontuacao = new BitmapFont();
 		textoPontuacao.setColor(Color.WHITE);
 		textoPontuacao.getData().setScale(10);
+	}
+
+	private void validarPontos(){
+		if(posicaoCanoHorizontal < 25-passaros[0].getWidth()){
+			if(!passouDoCano){
+				pontos++;
+				passouDoCano = true;
+			}
+		}
 	}
 
 	@Override
