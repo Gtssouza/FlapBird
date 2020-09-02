@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Game extends ApplicationAdapter {
 	private int movimentoX = 0;
@@ -22,7 +23,9 @@ public class Game extends ApplicationAdapter {
 	private float alturaDispositivo;
 	private float posicaoInicialVerticalPassaro = 0;
 	private float posicaoCanoHorizontal;
+	private float posicaoCanoVertical;
 	private float espacoEntreCanos;
+	private Random random;
 
 
 	
@@ -48,8 +51,8 @@ public class Game extends ApplicationAdapter {
 		spriteBatch.draw(fundo,0,0,larguraDispositivo,alturaDispositivo);
 		spriteBatch.draw(passaros[(int)variacao],30,posicaoInicialVerticalPassaro);
 		posicaoCanoHorizontal--;
-		spriteBatch.draw(canoBaixo, posicaoCanoHorizontal,alturaDispositivo/2 - canoBaixo.getHeight() - espacoEntreCanos/2);
-		spriteBatch.draw(canoAlto,posicaoCanoHorizontal,alturaDispositivo/2 + espacoEntreCanos/2);
+		spriteBatch.draw(canoBaixo, posicaoCanoHorizontal,alturaDispositivo/2 - canoBaixo.getHeight() - espacoEntreCanos/2 + posicaoCanoVertical);
+		spriteBatch.draw(canoAlto,posicaoCanoHorizontal,alturaDispositivo/2 + espacoEntreCanos/2 + posicaoCanoVertical);
 
 		spriteBatch.end();
 	}
@@ -67,6 +70,12 @@ public class Game extends ApplicationAdapter {
 	}
 
 	private void verificaEstadoJogo(){
+		//Movimentação do cano
+		posicaoCanoHorizontal -= Gdx.graphics.getDeltaTime()*200;
+		if(posicaoCanoHorizontal < - canoAlto.getWidth()){
+			posicaoCanoHorizontal = larguraDispositivo;
+			posicaoCanoVertical = random.nextInt(800) - 400;
+		}
 		//aplica evento de toque na tela
 		boolean toqueNaTela = Gdx.input.justTouched();
 		if(toqueNaTela){
@@ -85,6 +94,7 @@ public class Game extends ApplicationAdapter {
 		gravidade++;
 	}
 	private void iniciarObjetos(){
+		random = new Random();
 		spriteBatch = new SpriteBatch();
 		alturaDispositivo= Gdx.graphics.getHeight();
 		larguraDispositivo = Gdx.graphics.getWidth();
