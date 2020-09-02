@@ -13,52 +13,86 @@ public class Game extends ApplicationAdapter {
 	private SpriteBatch spriteBatch; //exibe imagens e formas dentro do jogo
 	private Texture[] passaros;
 	private Texture fundo;
+	private Texture canoBaixo;
+	private Texture canoAlto;
 
 	private float variacao = 0;
-	private float gravidade = 0;
+	private float gravidade = 2;
 	private float larguraDispositivo;
 	private float alturaDispositivo;
 	private float posicaoInicialVerticalPassaro = 0;
+	private float posicaoCanoHorizontal;
+	private float espacoEntreCanos;
 
 
 	
 	@Override
 	public void create () {
-		//Gdx.app.log("Create","Jogo iniciado");
-		spriteBatch = new SpriteBatch();
+
+		iniciarTexturas();
+		iniciarObjetos();
+	}
+
+	@Override
+	public void render () {
+
+		verificaEstadoJogo();
+		desenharTexturas();
+
+
+	}
+
+	private void desenharTexturas(){
+		spriteBatch.begin();
+
+		spriteBatch.draw(fundo,0,0,larguraDispositivo,alturaDispositivo);
+		spriteBatch.draw(passaros[(int)variacao],30,posicaoInicialVerticalPassaro);
+		posicaoCanoHorizontal--;
+		spriteBatch.draw(canoBaixo, posicaoCanoHorizontal,alturaDispositivo/2 - canoBaixo.getHeight() - espacoEntreCanos/2);
+		spriteBatch.draw(canoAlto,posicaoCanoHorizontal,alturaDispositivo/2 + espacoEntreCanos/2);
+
+		spriteBatch.end();
+	}
+
+	private void iniciarTexturas(){
 		passaros = new Texture[3];
 		passaros[0] = new Texture("passaro1.png");
 		passaros[1] = new Texture("passaro2.png");
 		passaros[2] = new Texture("passaro3.png");
 		fundo = new Texture("fundo.png");
 
-		alturaDispositivo= Gdx.graphics.getHeight();
-		larguraDispositivo = Gdx.graphics.getWidth();
-		posicaoInicialVerticalPassaro = alturaDispositivo/2;
+		canoAlto = new Texture("cano_topo_maior.png");
+		canoBaixo = new Texture("cano_baixo_maior.png");
+
 	}
 
-	@Override
-	public void render () {
+	private void verificaEstadoJogo(){
+		//aplica evento de toque na tela
+		boolean toqueNaTela = Gdx.input.justTouched();
+		if(toqueNaTela){
+			gravidade = -20;
+		}
 
+		//Aplica gravidade no passaro
+		if(posicaoInicialVerticalPassaro > 0 || toqueNaTela)
+			posicaoInicialVerticalPassaro = posicaoInicialVerticalPassaro - gravidade;
 
-		spriteBatch.begin();
+		//Calcula a diferença entre um render e outro
+		variacao+= Gdx.graphics.getDeltaTime() * 10;
 		if(variacao > 3)
 			variacao=0;
 
-		if(posicaoInicialVerticalPassaro > 0 )
-		posicaoInicialVerticalPassaro = posicaoInicialVerticalPassaro - gravidade;
-
-		spriteBatch.draw(fundo,0,0,larguraDispositivo,alturaDispositivo);
-		spriteBatch.draw(passaros[(int)variacao],30,posicaoInicialVerticalPassaro);
-		//Calcula a diferença entre um render e outro
-		variacao+= Gdx.graphics.getDeltaTime() * 10;
 		gravidade++;
-		movimentoX++;
-		spriteBatch.end();
-
-		//Gdx.app.log("Render","Jogo renderizado");
 	}
-	
+	private void iniciarObjetos(){
+		spriteBatch = new SpriteBatch();
+		alturaDispositivo= Gdx.graphics.getHeight();
+		larguraDispositivo = Gdx.graphics.getWidth();
+		posicaoInicialVerticalPassaro = alturaDispositivo/2;
+		posicaoCanoHorizontal = larguraDispositivo;
+		espacoEntreCanos = 400;
+	}
+
 	@Override
 	public void dispose () {
 		//Gdx.app.log("Dispose","Descarte de conteudo");
