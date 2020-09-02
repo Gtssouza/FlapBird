@@ -7,17 +7,25 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Rectangle;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 public class Game extends ApplicationAdapter {
-	private int movimentoX = 0;
 	private SpriteBatch spriteBatch; //exibe imagens e formas dentro do jogo
 	private Texture[] passaros;
 	private Texture fundo;
 	private Texture canoBaixo;
 	private Texture canoAlto;
+
+	//formas para colisao
+	private ShapeRenderer shapeRenderer;
+	private Circle circuloPassaro;
+	private Rectangle rectangleCanoCima;
+	private Rectangle rectangleCanoBaixo;
 
 	private float variacao = 0;
 	private float gravidade = 2;
@@ -47,6 +55,7 @@ public class Game extends ApplicationAdapter {
 		verificaEstadoJogo();
 		validarPontos();
 		desenharTexturas();
+		detectarColisoes();
 
 
 	}
@@ -72,6 +81,13 @@ public class Game extends ApplicationAdapter {
 
 		canoAlto = new Texture("cano_topo_maior.png");
 		canoBaixo = new Texture("cano_baixo_maior.png");
+
+	}
+
+	private void detectarColisoes(){
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+		shapeRenderer.circle(30, posicaoInicialVerticalPassaro, passaros[0].getWidth()/2);
+		shapeRenderer.end();
 
 	}
 
@@ -112,6 +128,12 @@ public class Game extends ApplicationAdapter {
 		textoPontuacao = new BitmapFont();
 		textoPontuacao.setColor(Color.WHITE);
 		textoPontuacao.getData().setScale(10);
+
+		//Formas geometricas para colisões
+		shapeRenderer = new ShapeRenderer();
+		circuloPassaro = new Circle();
+		rectangleCanoBaixo = new Rectangle();
+		rectangleCanoCima = new Rectangle();
 	}
 
 	private void validarPontos(){
