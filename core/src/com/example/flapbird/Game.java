@@ -2,8 +2,10 @@ package com.example.flapbird;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.util.ArrayList;
@@ -26,9 +28,11 @@ public class Game extends ApplicationAdapter {
 	private float posicaoCanoVertical;
 	private float espacoEntreCanos;
 	private Random random;
+	private int pontos = 0;
 
+	//Exibição de textos
+	BitmapFont textoPontuacao;
 
-	
 	@Override
 	public void create () {
 
@@ -53,7 +57,7 @@ public class Game extends ApplicationAdapter {
 		posicaoCanoHorizontal--;
 		spriteBatch.draw(canoBaixo, posicaoCanoHorizontal,alturaDispositivo/2 - canoBaixo.getHeight() - espacoEntreCanos/2 + posicaoCanoVertical);
 		spriteBatch.draw(canoAlto,posicaoCanoHorizontal,alturaDispositivo/2 + espacoEntreCanos/2 + posicaoCanoVertical);
-
+		textoPontuacao.draw(spriteBatch,String.valueOf(pontos), larguraDispositivo/2, alturaDispositivo-100);
 		spriteBatch.end();
 	}
 
@@ -101,6 +105,10 @@ public class Game extends ApplicationAdapter {
 		posicaoInicialVerticalPassaro = alturaDispositivo/2;
 		posicaoCanoHorizontal = larguraDispositivo;
 		espacoEntreCanos = 400;
+
+		textoPontuacao = new BitmapFont();
+		textoPontuacao.setColor(Color.WHITE);
+		textoPontuacao.getData().setScale(10);
 	}
 
 	@Override
