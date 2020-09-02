@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 
 import java.util.ArrayList;
@@ -85,8 +86,17 @@ public class Game extends ApplicationAdapter {
 	}
 
 	private void detectarColisoes(){
+
+		circuloPassaro.set(30 + passaros[0].getWidth()/2, posicaoInicialVerticalPassaro + passaros[0].getHeight()/2, passaros[0].getWidth()/2);
+		rectangleCanoBaixo.set(posicaoCanoHorizontal,alturaDispositivo/2 - canoBaixo.getHeight() - espacoEntreCanos/2 + posicaoCanoVertical,canoBaixo.getWidth(), canoBaixo.getHeight());
+		rectangleCanoCima.set(posicaoCanoHorizontal,alturaDispositivo/2 + espacoEntreCanos/2 + posicaoCanoVertical,canoAlto.getWidth(), canoAlto.getHeight());
+
+		if(Intersector.overlaps(circuloPassaro,rectangleCanoCima) || Intersector.overlaps(circuloPassaro, rectangleCanoBaixo)){
+			Gdx.app.log("Log","Colidiu cano");
+		}
+
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-		shapeRenderer.circle(30, posicaoInicialVerticalPassaro, passaros[0].getWidth()/2);
+
 		shapeRenderer.end();
 
 	}
