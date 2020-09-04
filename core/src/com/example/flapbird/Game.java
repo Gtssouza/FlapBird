@@ -2,6 +2,7 @@ package com.example.flapbird;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -42,6 +43,7 @@ public class Game extends ApplicationAdapter {
 	private float espacoEntreCanos;
 	private Random random;
 	private int pontos=0;
+	private int pontuacaoMaxima = 0;
 	private boolean passouCano=false;
 	private int estadoJogo = 0;
 	private float posicaoHorizontalPassaro = 0;
@@ -55,6 +57,9 @@ public class Game extends ApplicationAdapter {
 	Sound somVoando;
 	Sound somColisao;
 	Sound somPontuacao;
+
+	//Objeto salvar pontuação
+	Preferences preferences;
 
 	@Override
 	public void create () {
@@ -118,6 +123,11 @@ public class Game extends ApplicationAdapter {
 			/*if( posicaoInicialVerticalPassaro > 0 || toqueTela )
 				posicaoInicialVerticalPassaro = posicaoInicialVerticalPassaro - gravidade;
 			gravidade++;*/
+
+			if(pontos > pontuacaoMaxima){
+				pontuacaoMaxima = pontos;
+				preferences.putInteger("pontuacaoMaxima", pontuacaoMaxima);
+			}
 
 			posicaoHorizontalPassaro -= Gdx.graphics.getDeltaTime()*500;
 
@@ -196,7 +206,7 @@ public class Game extends ApplicationAdapter {
 		if( estadoJogo == 2 ){
 			batch.draw(gameOver, larguraDispositivo / 2 - gameOver.getWidth()/2, alturaDispositivo / 2 );
 			textoReiniciar.draw(batch, "Toque para reiniciar!", larguraDispositivo/2 -140, alturaDispositivo/2 - gameOver.getHeight()/2 );
-			textoMelhorPontuacao.draw(batch, "Seu record é: 0 pontos", larguraDispositivo/2 -140,alturaDispositivo/2 - gameOver.getHeight());
+			textoMelhorPontuacao.draw(batch, "Seu record é: "+pontuacaoMaxima+" pontos", larguraDispositivo/2 -140,alturaDispositivo/2 - gameOver.getHeight());
 		}
 
 		batch.end();
@@ -267,6 +277,10 @@ public class Game extends ApplicationAdapter {
 		somColisao = Gdx.audio.newSound(Gdx.files.internal("som_batida.wav"));
 		somVoando = Gdx.audio.newSound(Gdx.files.internal("som_asa.wav"));
 		somPontuacao = Gdx.audio.newSound(Gdx.files.internal("som_pontos.wav"));
+
+		//Inicializa as preferencias
+		preferences = Gdx.app.getPreferences("flappyBird");
+		pontuacaoMaxima = preferences.getInteger("pontuacaoMaxima",0);
 
 	}
 
