@@ -2,6 +2,7 @@ package com.example.flapbird;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -49,6 +50,11 @@ public class Game extends ApplicationAdapter {
 	BitmapFont textoReiniciar;
 	BitmapFont textoMelhorPontuacao;
 
+	//Configuração dos sons
+	Sound somVoando;
+	Sound somColisao;
+	Sound somPontuacao;
+
 	@Override
 	public void create () {
 		inicializarTexturas();
@@ -81,6 +87,7 @@ public class Game extends ApplicationAdapter {
 			if( toqueTela ){
 				gravidade = -15;
 				estadoJogo = 1;
+				somVoando.play();
 			}
 
 		}else if( estadoJogo == 1 ){
@@ -88,6 +95,7 @@ public class Game extends ApplicationAdapter {
 			/* Aplica evento de toque na tela */
 			if( toqueTela ){
 				gravidade = -15;
+				somVoando.play();
 			}
 
 			/*Movimentar o cano*/
@@ -111,7 +119,7 @@ public class Game extends ApplicationAdapter {
 				gravidade = 0;
 				posicaoInicialVerticalPassaro = alturaDispositivo / 2;
 				posicaoCanoHorizontal = larguraDispositivo;
-				
+
 			}
 		}
 
@@ -136,8 +144,11 @@ public class Game extends ApplicationAdapter {
 		boolean colidiuCanoBaixo = Intersector.overlaps(circuloPassaro, retanguloCanoBaixo);
 
 		if( colidiuCanoCima || colidiuCanoBaixo ){
-			Gdx.app.log("Log", "Colidiu");
-			estadoJogo = 2;
+			if(estadoJogo == 1){
+				somColisao.play();
+				estadoJogo = 2;
+			}
+
 		}
 
         /*
@@ -189,6 +200,7 @@ public class Game extends ApplicationAdapter {
 			if(!passouCano){
 				pontos++;
 				passouCano = true;
+				somPontuacao.play();
 			}
 		}
 
@@ -241,6 +253,11 @@ public class Game extends ApplicationAdapter {
 		circuloPassaro = new Circle();
 		retanguloCanoBaixo = new Rectangle();
 		retanguloCanoCima = new Rectangle();
+
+		//Inicializa som
+		somColisao = Gdx.audio.newSound(Gdx.files.internal("som_batida.wav"));
+		somVoando = Gdx.audio.newSound(Gdx.files.internal("som_asa.wav"));
+		somPontuacao = Gdx.audio.newSound(Gdx.files.internal("som_pontos.wav"));
 
 	}
 
