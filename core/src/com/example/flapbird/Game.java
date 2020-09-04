@@ -44,6 +44,7 @@ public class Game extends ApplicationAdapter {
 	private int pontos=0;
 	private boolean passouCano=false;
 	private int estadoJogo = 0;
+	private float posicaoHorizontalPassaro = 0;
 
 	//Exibiçao de textos
 	BitmapFont textoPontuacao;
@@ -113,10 +114,18 @@ public class Game extends ApplicationAdapter {
 			gravidade++;
 
 		}else if( estadoJogo == 2 ){
+			/* Aplica gravidade no pássaro */
+			/*if( posicaoInicialVerticalPassaro > 0 || toqueTela )
+				posicaoInicialVerticalPassaro = posicaoInicialVerticalPassaro - gravidade;
+			gravidade++;*/
+
+			posicaoHorizontalPassaro -= Gdx.graphics.getDeltaTime()*500;
+
 			if(toqueTela){
 				estadoJogo = 0;
 				pontos = 0;
 				gravidade = 0;
+				posicaoHorizontalPassaro = 0;
 				posicaoInicialVerticalPassaro = alturaDispositivo / 2;
 				posicaoCanoHorizontal = larguraDispositivo;
 
@@ -128,7 +137,7 @@ public class Game extends ApplicationAdapter {
 	private void detectarColisoes(){
 
 		circuloPassaro.set(
-				50 + passaros[0].getWidth() / 2 ,posicaoInicialVerticalPassaro + passaros[0].getHeight()/2,passaros[0].getWidth()/2
+				50+ posicaoHorizontalPassaro + passaros[0].getWidth() / 2 ,posicaoInicialVerticalPassaro + passaros[0].getHeight()/2,passaros[0].getWidth()/2
 		);
 
 		retanguloCanoBaixo.set(
@@ -179,7 +188,7 @@ public class Game extends ApplicationAdapter {
 		batch.begin();
 
 		batch.draw(fundo,0,0,larguraDispositivo, alturaDispositivo);
-		batch.draw( passaros[ (int) variacao] ,50,posicaoInicialVerticalPassaro);
+		batch.draw( passaros[ (int) variacao] ,50 + posicaoHorizontalPassaro,posicaoInicialVerticalPassaro);
 		batch.draw(canoBaixo, posicaoCanoHorizontal, alturaDispositivo / 2 - canoBaixo.getHeight() - espacoEntreCanos/2 + posicaoCanoVertical);
 		batch.draw(canoTopo, posicaoCanoHorizontal,alturaDispositivo / 2 + espacoEntreCanos / 2 + posicaoCanoVertical );
 		textoPontuacao.draw(batch, String.valueOf(pontos),larguraDispositivo/2, alturaDispositivo -110 );
