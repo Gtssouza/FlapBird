@@ -6,6 +6,7 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,6 +14,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -61,6 +64,12 @@ public class Game extends ApplicationAdapter {
 	//Objeto salvar pontuação
 	Preferences preferences;
 
+	//Objetos para câmera
+	private OrthographicCamera orthographicCamera;
+	private Viewport viewport;
+	private final float VIRTUAL_WIDTH = 720;
+	private final float VIRTUAL_HEIGHT = 1280;
+
 	@Override
 	public void create () {
 		inicializarTexturas();
@@ -69,6 +78,9 @@ public class Game extends ApplicationAdapter {
 
 	@Override
 	public void render () {
+
+		//Limpar frames anteriores
+		
 
 		verificarEstadoJogo();
 		validarPontos();
@@ -194,6 +206,7 @@ public class Game extends ApplicationAdapter {
 	}
 
 	private void desenharTexturas(){
+		batch.setProjectionMatrix(orthographicCamera.combined);
 
 		batch.begin();
 
@@ -248,8 +261,8 @@ public class Game extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		random = new Random();
 
-		larguraDispositivo = Gdx.graphics.getWidth();
-		alturaDispositivo = Gdx.graphics.getHeight();
+		larguraDispositivo = VIRTUAL_WIDTH;
+		alturaDispositivo = VIRTUAL_HEIGHT;
 		posicaoInicialVerticalPassaro = alturaDispositivo / 2;
 		posicaoCanoHorizontal = larguraDispositivo;
 		espacoEntreCanos = 350;
@@ -282,6 +295,17 @@ public class Game extends ApplicationAdapter {
 		preferences = Gdx.app.getPreferences("flappyBird");
 		pontuacaoMaxima = preferences.getInteger("pontuacaoMaxima",0);
 
+		//Configuração da câmera
+		orthographicCamera = new OrthographicCamera();
+		orthographicCamera.position.set(VIRTUAL_WIDTH/2, VIRTUAL_HEIGHT/2,0);
+		viewport = new StretchViewport(VIRTUAL_WIDTH,VIRTUAL_HEIGHT,orthographicCamera);
+
+	}
+
+	@Override
+	public void resize(int width, int height) {
+
+		viewport.update(width,height);
 	}
 
 	@Override
