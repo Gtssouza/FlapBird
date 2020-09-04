@@ -105,7 +105,14 @@ public class Game extends ApplicationAdapter {
 			gravidade++;
 
 		}else if( estadoJogo == 2 ){
-
+			if(toqueTela){
+				estadoJogo = 0;
+				pontos = 0;
+				gravidade = 0;
+				posicaoInicialVerticalPassaro = alturaDispositivo / 2;
+				posicaoCanoHorizontal = larguraDispositivo;
+				
+			}
 		}
 
 	}
